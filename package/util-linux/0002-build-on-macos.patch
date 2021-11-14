@@ -1,0 +1,27 @@
+diff -Naur util-linux-2.37.2.orig/libblkid/src/blkid.h.in util-linux-2.37.2/libblkid/src/blkid.h.in
+--- util-linux-2.37.2.orig/libblkid/src/blkid.h.in	2021-05-06 13:55:46.000000000 +0300
++++ util-linux-2.37.2/libblkid/src/blkid.h.in	2021-11-14 20:18:42.000000000 +0300
+@@ -33,6 +33,11 @@
+ #define BLKID_VERSION   "@LIBBLKID_VERSION@"
+ #define BLKID_DATE      "@LIBBLKID_DATE@"
+ 
++
++#ifndef UUID_STR_LEN
++# define UUID_STR_LEN   37
++#endif
++
+ /**
+  * blkid_dev:
+  *
+diff -Naur util-linux-2.37.2.orig/libuuid/src/parse.c util-linux-2.37.2/libuuid/src/parse.c
+--- util-linux-2.37.2.orig/libuuid/src/parse.c	2021-07-20 12:33:27.000000000 +0300
++++ util-linux-2.37.2/libuuid/src/parse.c	2021-11-14 20:26:18.000000000 +0300
+@@ -40,6 +40,8 @@
+ #include "c.h"
+ #include "uuidP.h"
+ 
++int uuid_parse_range(const char *in_start, const char *in_end, uuid_t uu);
++
+ int uuid_parse(const char *in, uuid_t uu)
+ {
+ 	size_t len = strlen(in);

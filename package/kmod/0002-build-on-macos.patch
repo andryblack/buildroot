@@ -1,0 +1,83 @@
+diff -Naur kmod-29/Makefile.am host-kmod-29/Makefile.am
+--- kmod-29/Makefile.am	2021-05-21 01:37:20.000000000 +0300
++++ host-kmod-29/Makefile.am	2021-11-14 02:20:03.000000000 +0300
+@@ -98,8 +98,7 @@
+ 	libkmod/COPYING testsuite/COPYING tools/COPYING COPYING
+ 
+ libkmod_libkmod_la_LDFLAGS = $(AM_LDFLAGS) \
+-	-version-info $(LIBKMOD_CURRENT):$(LIBKMOD_REVISION):$(LIBKMOD_AGE) \
+-	-Wl,--version-script=$(top_srcdir)/libkmod/libkmod.sym
++	-version-info $(LIBKMOD_CURRENT):$(LIBKMOD_REVISION):$(LIBKMOD_AGE) 
+ libkmod_libkmod_la_DEPENDENCIES = \
+ 	shared/libshared.la \
+ 	${top_srcdir}/libkmod/libkmod.sym
+@@ -109,8 +108,7 @@
+ 
+ noinst_LTLIBRARIES += libkmod/libkmod-internal.la
+ libkmod_libkmod_internal_la_SOURCES = $(libkmod_libkmod_la_SOURCES)
+-libkmod_libkmod_internal_la_LDFLAGS = $(AM_LDFLAGS) \
+-	-Wl,--version-script=$(top_srcdir)/libkmod/libkmod.sym
++libkmod_libkmod_internal_la_LDFLAGS = $(AM_LDFLAGS) 
+ libkmod_libkmod_internal_la_DEPENDENCIES  = $(libkmod_libkmod_la_DEPENDENCIES)
+ libkmod_libkmod_internal_la_LIBADD = $(libkmod_libkmod_la_LIBADD)
+ 
+diff -Naur kmod-29/Makefile.in host-kmod-29/Makefile.in
+--- kmod-29/Makefile.in	2021-05-21 02:02:52.000000000 +0300
++++ host-kmod-29/Makefile.in	2021-11-14 02:20:03.000000000 +0300
+@@ -1051,8 +1051,7 @@
+ 	libkmod/libkmod-signature.c
+ 
+ libkmod_libkmod_la_LDFLAGS = $(AM_LDFLAGS) \
+-	-version-info $(LIBKMOD_CURRENT):$(LIBKMOD_REVISION):$(LIBKMOD_AGE) \
+-	-Wl,--version-script=$(top_srcdir)/libkmod/libkmod.sym
++	-version-info $(LIBKMOD_CURRENT):$(LIBKMOD_REVISION):$(LIBKMOD_AGE)
+ 
+ libkmod_libkmod_la_DEPENDENCIES = \
+ 	shared/libshared.la \
+@@ -1063,8 +1062,7 @@
+ 	${libzstd_LIBS} ${liblzma_LIBS} ${zlib_LIBS} ${libcrypto_LIBS}
+ 
+ libkmod_libkmod_internal_la_SOURCES = $(libkmod_libkmod_la_SOURCES)
+-libkmod_libkmod_internal_la_LDFLAGS = $(AM_LDFLAGS) \
+-	-Wl,--version-script=$(top_srcdir)/libkmod/libkmod.sym
++libkmod_libkmod_internal_la_LDFLAGS = $(AM_LDFLAGS)
+ 
+ libkmod_libkmod_internal_la_DEPENDENCIES = $(libkmod_libkmod_la_DEPENDENCIES)
+ libkmod_libkmod_internal_la_LIBADD = $(libkmod_libkmod_la_LIBADD)
+diff -Naur kmod-29/libkmod/libkmod-module.c host-kmod-29/libkmod/libkmod-module.c
+--- kmod-29/libkmod/libkmod-module.c	2021-05-11 20:09:04.000000000 +0300
++++ host-kmod-29/libkmod/libkmod-module.c	2021-11-14 02:25:42.000000000 +0300
+@@ -788,7 +788,10 @@
+ 
+ 	if (mod == NULL)
+ 		return -ENOENT;
+-
++#ifndef __linux__
++	ERR(mod->ctx, "could not remove '%s': %m\n", mod->name);
++	err = -2;
++#else
+ 	/* Filter out other flags and force ONONBLOCK */
+ 	flags &= KMOD_REMOVE_FORCE;
+ 	flags |= KMOD_REMOVE_NOWAIT;
+@@ -798,7 +801,7 @@
+ 		err = -errno;
+ 		ERR(mod->ctx, "could not remove '%s': %m\n", mod->name);
+ 	}
+-
++#endif
+ 	return err;
+ }
+ 
+@@ -885,7 +888,11 @@
+ 	}
+ 	size = kmod_file_get_size(mod->file);
+ 
++#ifdef __linux__
+ 	err = init_module(mem, size, args);
++#else
++	err = errno = -2;
++#endif
+ init_finished:
+ 	if (err < 0) {
+ 		err = -errno;
+

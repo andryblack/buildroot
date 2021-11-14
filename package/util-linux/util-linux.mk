@@ -234,7 +234,11 @@ HOST_UTIL_LINUX_CONF_OPTS += \
 	--disable-wall \
 	--disable-wdctl \
 	--disable-write \
-	--disable-zramctl
+	--disable-zramctl \
+	--disable-ipcrm \
+	--disable-ipcs \
+	--disable-hardlink \
+	--disable-libmount
 # Used by cramfs utils
 HOST_UTIL_LINUX_DEPENDENCIES += host-zlib
 else

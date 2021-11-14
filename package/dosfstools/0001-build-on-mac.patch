@@ -1,0 +1,26 @@
+diff -Naur dosfstools-4.2/src/blkdev/blkdev.c host-dosfstools-4.2/src/blkdev/blkdev.c
+--- dosfstools-4.2/src/blkdev/blkdev.c	2021-01-31 15:49:12.000000000 +0300
++++ host-dosfstools-4.2/src/blkdev/blkdev.c	2021-11-14 00:22:10.000000000 +0300
+@@ -7,7 +7,9 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/ioctl.h>
++#ifdef __GLIBC__
+ #include <sys/sysmacros.h>
++#endif
+ #include <unistd.h>
+ #include <stdint.h>
+ #include <stdio.h>
+diff -Naur dosfstools-4.2/src/device_info.c host-dosfstools-4.2/src/device_info.c
+--- dosfstools-4.2/src/device_info.c	2021-01-31 15:49:12.000000000 +0300
++++ host-dosfstools-4.2/src/device_info.c	2021-11-14 00:20:21.000000000 +0300
+@@ -24,7 +24,9 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/ioctl.h>
++#ifdef __GLIBC__
+ #include <sys/sysmacros.h>
++#endif
+ 
+ #ifdef HAVE_LINUX_LOOP_H
+ #include <linux/loop.h>

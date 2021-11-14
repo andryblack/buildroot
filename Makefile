@@ -314,6 +314,9 @@ endif
 ifndef HOSTRANLIB
 HOSTRANLIB := ranlib
 endif
+ifndef HOSTCHMOD
+HOSTCHMOD := chown
+endif
 HOSTAR := $(shell which $(HOSTAR) || type -p $(HOSTAR) || echo ar)
 HOSTAS := $(shell which $(HOSTAS) || type -p $(HOSTAS) || echo as)
 HOSTCPP := $(shell which $(HOSTCPP) || type -p $(HOSTCPP) || echo cpp)
@@ -323,8 +326,8 @@ HOSTNM := $(shell which $(HOSTNM) || type -p $(HOSTNM) || echo nm)
 HOSTOBJCOPY := $(shell which $(HOSTOBJCOPY) || type -p $(HOSTOBJCOPY) || echo objcopy)
 HOSTRANLIB := $(shell which $(HOSTRANLIB) || type -p $(HOSTRANLIB) || echo ranlib)
 SED := $(shell which sed || type -p sed) -i -e
-
-export HOSTAR HOSTAS HOSTCC HOSTCXX HOSTLD
+HOSTCHMOD := $(shell which $(HOSTCHMOD) || type -p $(HOSTCHMOD) || echo chmod)
+export HOSTAR HOSTAS HOSTCC HOSTCXX HOSTLD HOSTCHMOD
 export HOSTCC_NOCCACHE HOSTCXX_NOCCACHE
 
 # Determine the userland we are running on.

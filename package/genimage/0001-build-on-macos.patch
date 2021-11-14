@@ -1,0 +1,87 @@
+diff -Naur genimage-14/image-rauc.c host-genimage-14/image-rauc.c
+--- genimage-14/image-rauc.c	2021-01-08 13:25:30.000000000 +0300
++++ host-genimage-14/image-rauc.c	2021-11-14 00:58:30.000000000 +0300
+@@ -79,14 +79,17 @@
+ 		}
+ 
+ 		/* create parent directories if target needs it */
+-		path = strdupa(target);
++		path = strdup(target);
+ 		tmp = strrchr(path, '/');
+ 		if (tmp) {
+ 			*tmp = '\0';
+ 			ret = systemp(image, "mkdir -p '%s/%s'",
+ 					tmpdir, path);
++			free(path);
+ 			if (ret)
+ 				return ret;
++		} else {
++			free(path);
+ 		}
+ 
+ 		image_info(image, "adding file '%s' as '%s' ...\n",
+diff -Naur genimage-14/image-vfat.c host-genimage-14/image-vfat.c
+--- genimage-14/image-vfat.c	2021-01-08 13:25:30.000000000 +0300
++++ host-genimage-14/image-vfat.c	2021-11-14 00:59:19.000000000 +0300
+@@ -48,7 +48,7 @@
+ 		struct image *child = image_get(part->image);
+ 		const char *file = imageoutfile(child);
+ 		const char *target = part->name;
+-		char *path = strdupa(target);
++		char *path = strdup(target);
+ 		char *next = path;
+ 
+ 		while ((next = strchr(next, '/')) != NULL) {
+@@ -59,6 +59,7 @@
+ 			*next = '/';
+ 			++next;
+ 		}
++		free(path);
+ 
+ 		image_info(image, "adding file '%s' as '%s' ...\n",
+ 				child->file, *target ? target : child->file);
+diff -Naur genimage-14/util.c host-genimage-14/util.c
+--- genimage-14/util.c	2021-01-13 12:44:08.000000000 +0300
++++ host-genimage-14/util.c	2021-11-14 00:41:34.000000000 +0300
+@@ -24,8 +24,10 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/wait.h>
++#ifdef __linux__
+ #include <linux/fs.h>
+ #include <linux/fiemap.h>
++#endif
+ #include <unistd.h>
+ #include <fcntl.h>
+ #include <ctype.h>
+@@ -350,6 +352,7 @@
+ int map_file_extents(struct image *image, const char *filename, int f,
+ 		     size_t size, struct extent **extents, size_t *extent_count)
+ {
++#ifdef __linux__
+ 	struct fiemap *fiemap;
+ 	unsigned i;
+ 	int ret;
+@@ -395,6 +398,9 @@
+ 
+ 	image_error(image, "fiemap %s: %d %s\n", filename, errno, strerror(errno));
+ 	return ret;
++#else
++	return whole_file_exent(size, extents, extent_count);
++#endif
+ }
+ 
+ int pad_file(struct image *image, const char *infile,
+@@ -706,10 +712,12 @@
+ 		image_error(image, "open: %s\n", strerror(errno));
+ 		return ret;
+ 	}
++#ifdef __linux__
+ 	/* no error because not all block devices support this */
+ 	if (ioctl(fd, BLKRRPART) < 0)
+ 		image_info(image, "failed to re-read partition table: %s\n",
+ 			strerror(errno));
++#endif
+ 	close(fd);
+ 	return 0;
+ }

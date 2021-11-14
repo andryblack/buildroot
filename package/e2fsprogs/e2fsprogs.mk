@@ -35,7 +35,7 @@ HOST_E2FSPROGS_CONF_OPTS = \
 	--disable-libuuid \
 	--disable-testio-debug \
 	--enable-symlink-install \
-	--enable-elf-shlibs \
+	--enable-elf-shlibs=no \
 	--with-crond-dir=no \
 	--with-udev-rules-dir=no \
 	--with-systemd-unit-dir=no
