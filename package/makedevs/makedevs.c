@@ -265,7 +265,7 @@ long my_getpwnam(const char *name)
 	stream = bb_xfopen(PASSWD_PATH, "r");
 	while(1) {
 		errno = 0;
-		myuser = fgetpwent(stream);
+		myuser = NULL;//fgetpwent(stream);
 		if (myuser == NULL)
 			bb_error_msg_and_die("unknown user name: %s", name);
 		if (errno)
@@ -286,7 +286,7 @@ long my_getgrnam(const char *name)
 	stream = bb_xfopen(GROUP_PATH, "r");
 	while(1) {
 		errno = 0;
-		mygroup = fgetgrent(stream);
+		mygroup = NULL;//fgetgrent(stream);
 		if (mygroup == NULL)
 			bb_error_msg_and_die("unknown group name: %s", name);
 		if (errno)

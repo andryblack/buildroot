@@ -1,0 +1,125 @@
+diff -Naur e2fsprogs-1.46.4.orig/lib/Makefile.elf-lib e2fsprogs-1.46.4/lib/Makefile.elf-lib
+--- e2fsprogs-1.46.4.orig/lib/Makefile.elf-lib	2021-08-19 05:53:01.000000000 +0300
++++ e2fsprogs-1.46.4/lib/Makefile.elf-lib	2021-11-14 20:33:11.000000000 +0300
+@@ -26,7 +26,7 @@
+ 	$(E) "	GEN_ELF_SOLIB $(ELF_LIB)"
+ 	$(Q) (cd elfshared; $(CC) -o $(ELF_LIB) \
+ 		-L$(top_builddir)/../lib $(LDFLAGS_SHLIB) -fPIC -shared \
+-		-Wl,-soname,$(ELF_SONAME) $(OBJS) $(ELF_OTHER_LIBS))
++		$(OBJS) $(ELF_OTHER_LIBS))
+ 	$(Q) $(MV) elfshared/$(ELF_LIB) .
+ 	$(Q) $(RM) -f ../$(ELF_LIB) ../$(ELF_IMAGE).so ../$(ELF_SONAME)
+ 	$(Q) (cd ..; $(LN) $(LINK_BUILD_FLAGS) \
+diff -Naur e2fsprogs-1.46.4.orig/lib/Makefile.solaris-lib e2fsprogs-1.46.4/lib/Makefile.solaris-lib
+--- e2fsprogs-1.46.4.orig/lib/Makefile.solaris-lib	2021-08-19 05:53:01.000000000 +0300
++++ e2fsprogs-1.46.4/lib/Makefile.solaris-lib	2021-11-14 20:33:33.000000000 +0300
+@@ -26,7 +26,7 @@
+ 	$(E) "	GEN_ELF_SOLIB $(ELF_LIB)"
+ 	$(Q) (cd elfshared; $(CC) --shared -o $(ELF_LIB) \
+ 		-L$(top_builddir)/../lib $(LDFLAGS_SHLIB) \
+-		-Wl,-h,$(ELF_SONAME) $(OBJS) $(ELF_OTHER_LIBS))
++		$(OBJS) $(ELF_OTHER_LIBS))
+ 	$(Q) $(MV) elfshared/$(ELF_LIB) .
+ 	$(Q) $(RM) -f ../$(ELF_LIB) ../$(ELF_IMAGE).so ../$(ELF_SONAME)
+ 	$(Q) (cd ..; $(LN) $(LINK_BUILD_FLAGS) \
+diff -Naur e2fsprogs-1.46.4.orig/lib/blkid/Makefile.in e2fsprogs-1.46.4/lib/blkid/Makefile.in
+--- e2fsprogs-1.46.4.orig/lib/blkid/Makefile.in	2021-08-19 05:53:01.000000000 +0300
++++ e2fsprogs-1.46.4/lib/blkid/Makefile.in	2021-11-14 20:55:40.000000000 +0300
+@@ -148,8 +148,9 @@
+ 
+ installdirs::
+ 	$(E) "	MKDIR_P $(libdir) $(includedir)/blkid"
+-	$(Q) $(MKDIR_P) $(DESTDIR)$(libdir) \
+-		$(DESTDIR)$(includedir)/blkid $(DESTDIR)$(pkgconfigdir)
++	$(Q) $(MKDIR_P) $(DESTDIR)$(libdir) 
++	$(Q) $(MKDIR_P) $(DESTDIR)$(includedir)/blkid 
++	$(Q) $(MKDIR_P) $(DESTDIR)$(pkgconfigdir)
+ 
+ install:: all installdirs 
+ 	$(E) "	INSTALL_DATA $(libdir)/libblkid.a"
+diff -Naur e2fsprogs-1.46.4.orig/lib/e2p/Makefile.in e2fsprogs-1.46.4/lib/e2p/Makefile.in
+--- e2fsprogs-1.46.4.orig/lib/e2p/Makefile.in	2021-08-19 05:53:01.000000000 +0300
++++ e2fsprogs-1.46.4/lib/e2p/Makefile.in	2021-11-14 20:55:17.000000000 +0300
+@@ -86,8 +86,9 @@
+ 
+ installdirs::
+ 	$(E) "	MKDIR_P $(libdir) $(includedir)/e2p"
+-	$(Q) $(MKDIR_P) $(DESTDIR)$(libdir) \
+-		$(DESTDIR)$(includedir)/e2p $(DESTDIR)$(pkgconfigdir)
++	$(Q) $(MKDIR_P) $(DESTDIR)$(libdir) 
++	$(Q) $(MKDIR_P) $(DESTDIR)$(includedir)/e2p
++	$(Q) $(MKDIR_P) $(DESTDIR)$(pkgconfigdir)
+ 
+ install:: all installdirs 
+ 	$(E) "	INSTALL_DATA $(libdir)/libe2p.a"
+diff -Naur e2fsprogs-1.46.4.orig/lib/et/Makefile.in e2fsprogs-1.46.4/lib/et/Makefile.in
+--- e2fsprogs-1.46.4.orig/lib/et/Makefile.in	2021-08-19 05:53:01.000000000 +0300
++++ e2fsprogs-1.46.4/lib/et/Makefile.in	2021-11-14 20:53:56.000000000 +0300
+@@ -102,10 +102,13 @@
+ 
+ installdirs::
+ 	$(E) "	MKDIR_P $(libdir) $(includedir)/et $(datadir)/et $(bindir) $(man1dir) $(man3dir)"
+-	$(Q) $(MKDIR_P) $(DESTDIR)$(libdir) \
+-		$(DESTDIR)$(includedir)/et $(DESTDIR)$(datadir)/et \
+-		$(DESTDIR)$(bindir) $(DESTDIR)$(man1dir) \
+-		$(DESTDIR)$(man3dir) $(DESTDIR)$(pkgconfigdir)
++	$(Q) $(MKDIR_P) $(DESTDIR)$(libdir) 
++	$(Q) $(MKDIR_P) $(DESTDIR)$(includedir)/et 
++	$(Q) $(MKDIR_P) $(DESTDIR)$(datadir)/et 
++	$(Q) $(MKDIR_P) $(DESTDIR)$(bindir) 
++	$(Q) $(MKDIR_P) $(DESTDIR)$(man1dir) 
++	$(Q) $(MKDIR_P) $(DESTDIR)$(man3dir) 
++	$(Q) $(MKDIR_P) $(DESTDIR)$(pkgconfigdir)
+ 
+ install:: compile_et libcom_err.a $(HFILES) installdirs com_err.pc
+ 	$(E) "	INSTALL_DATA $(libdir)/libcom_err.a"
+diff -Naur e2fsprogs-1.46.4.orig/lib/ext2fs/Makefile.in e2fsprogs-1.46.4/lib/ext2fs/Makefile.in
+--- e2fsprogs-1.46.4.orig/lib/ext2fs/Makefile.in	2021-08-19 05:53:01.000000000 +0300
++++ e2fsprogs-1.46.4/lib/ext2fs/Makefile.in	2021-11-14 20:56:26.000000000 +0300
+@@ -557,8 +557,9 @@
+ 
+ installdirs::
+ 	$(E) "	MKDIR_P $(libdir) $(includedir)/ext2fs"
+-	$(Q) $(MKDIR_P) $(DESTDIR)$(libdir) \
+-		$(DESTDIR)$(includedir)/ext2fs $(DESTDIR)$(pkgconfigdir)
++	$(Q) $(MKDIR_P) $(DESTDIR)$(libdir) 
++	$(Q) $(MKDIR_P) $(DESTDIR)$(includedir)/ext2fs 
++	$(Q) $(MKDIR_P) $(DESTDIR)$(pkgconfigdir)
+ 
+ install:: all $(HFILES) $(HFILES_IN) installdirs ext2fs.pc
+ 	$(E) "	INSTALL_DATA $(libdir)/libext2fs.a"
+diff -Naur e2fsprogs-1.46.4.orig/lib/ss/Makefile.in e2fsprogs-1.46.4/lib/ss/Makefile.in
+--- e2fsprogs-1.46.4.orig/lib/ss/Makefile.in	2021-08-19 05:53:01.000000000 +0300
++++ e2fsprogs-1.46.4/lib/ss/Makefile.in	2021-11-14 20:57:36.000000000 +0300
+@@ -126,9 +126,11 @@
+ 
+ installdirs::
+ 	$(E) "	MKDIR_P $(libdir) $(includedir)/ss $(datadir)/ss $(bindir)"
+-	$(Q) $(MKDIR_P) $(DESTDIR)$(libdir) \
+-		$(DESTDIR)$(includedir)/ss $(DESTDIR)$(datadir)/ss \
+-		$(DESTDIR)$(bindir) $(DESTDIR)$(pkgconfigdir)
++	$(Q) $(MKDIR_P) $(DESTDIR)$(libdir) 
++	$(Q) $(MKDIR_P) $(DESTDIR)$(includedir)/ss 
++	$(Q) $(MKDIR_P) $(DESTDIR)$(datadir)/ss 
++	$(Q) $(MKDIR_P) $(DESTDIR)$(bindir) 
++	$(Q) $(MKDIR_P) $(DESTDIR)$(pkgconfigdir)
+ 
+ install:: libss.a $(INSTALL_HFILES) installdirs ss_err.h mk_cmds ss.pc
+ 	$(E) "	INSTALL_DATA $(DESTDIR)$(libdir)/libss.a"
+diff -Naur e2fsprogs-1.46.4.orig/lib/uuid/Makefile.in e2fsprogs-1.46.4/lib/uuid/Makefile.in
+--- e2fsprogs-1.46.4.orig/lib/uuid/Makefile.in	2021-08-19 05:53:01.000000000 +0300
++++ e2fsprogs-1.46.4/lib/uuid/Makefile.in	2021-11-14 20:56:54.000000000 +0300
+@@ -132,9 +132,10 @@
+ 
+ installdirs::
+ 	$(E) "	MKDIR_P $(libdir) $(includedir)/uuid $(man3dir)"
+-	$(Q) $(MKDIR_P) $(DESTDIR)$(libdir)  \
+-		$(DESTDIR)$(includedir)/uuid $(DESTDIR)$(man3dir) \
+-		$(DESTDIR)$(pkgconfigdir)
++	$(Q) $(MKDIR_P) $(DESTDIR)$(libdir)  
++	$(Q) $(MKDIR_P) $(DESTDIR)$(includedir)/uuid 
++	$(Q) $(MKDIR_P) $(DESTDIR)$(man3dir) \
++	$(Q) $(MKDIR_P) $(DESTDIR)$(pkgconfigdir)
+ 
+ install:: all installdirs 
+ 	$(E) "	INSTALL_DATA $(libdir)/libuuid.a"
