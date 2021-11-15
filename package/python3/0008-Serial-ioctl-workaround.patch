@@ -18,11 +18,13 @@ diff --git a/Modules/termios.c b/Modules/termios.c
 index 75e5e52320..eefbddfe69 100644
 --- a/Modules/termios.c
 +++ b/Modules/termios.c
-@@ -15,7 +15,9 @@
+@@ -15,7 +15,11 @@
  #endif
  
  #include <termios.h>
++#ifdef __linux__
 +#include <linux/serial.h>
++#endif
  #include <sys/ioctl.h>
 +#undef TIOCTTYGSTRUCT
  
