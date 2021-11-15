@@ -42,7 +42,6 @@ HOST_PYTHON3_CONF_OPTS += \
 # Make python believe we don't have 'hg', so that it doesn't try to
 # communicate over the network during the build.
 HOST_PYTHON3_CONF_ENV += \
-	LDFLAGS="$(HOST_LDFLAGS) -Wl,--enable-new-dtags" \
 	ac_cv_prog_HAS_HG=/bin/false
 
 PYTHON3_DEPENDENCIES = host-python3 libffi
