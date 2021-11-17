@@ -119,6 +119,7 @@ _EOF_
 # path pointed to by GIT_DIR, but really uses the directory passed as
 # argument.
 _git init .
+_git reset --hard
 
 # Ensure the repo has an origin (in case a previous run was killed).
 if ! _plain_git remote |grep -q -E '^origin$'; then
@@ -127,7 +128,7 @@ fi
 
 _git remote set-url origin "'${uri}'"
 
-printf "Fetching all references\n"
+printf "Fetching all references for '%s'\n" "${cset}"
 _git fetch origin
 _git fetch origin -t
 
@@ -176,19 +177,22 @@ fi
 cmd='printf "Deregistering submodule \"%s\"\n" "${path}" && cd .. && rm -rf "${path##*/}"'
 _git submodule --quiet foreach "'${cmd}'"
 
+commit=$( _plain_git rev-parse --quiet --verify "'${cset}^{commit}'")
+printf "Commit: '%s'\n" "${commit}"
+
 # Checkout the required changeset, so that we can update the required
 # submodules.
-_git checkout -f -q "'${cset}'"
+_git checkout -f -d -q "'${commit}'"
 
 # Get rid of now-untracked directories (in case a git operation was
 # interrupted in a previous run, or to get rid of empty directories
 # that were parents of submodules removed above).
 _git clean -ffdx
-
+_git log -1 --pretty='format:%ci'
 # Get date of commit to generate a reproducible archive.
 # %ci is ISO 8601, so it's fully qualified, with TZ and all.
-date="$( _plain_git log -1 --pretty=format:%ci )"
-
+gitdate="$( _plain_git log -1 --pretty='format:%ci' )"
+echo "date: ${gitdate}"
 # There might be submodules, so fetch them.
 if [ ${recurse} -eq 1 ]; then
     _git submodule update --init --recursive
@@ -228,4 +232,4 @@ popd >/dev/null
 # The .git dir would generate non reproducible tarballs as it depends on
 # the state of the remote server. It also would generate large tarballs
 # (gigabytes for some linux trees) when a full clone took place.
-mk_tar_gz "${git_cache}" "${basename}" "${date}" "${output}" ".git/*"
+mk_tar_gz "${git_cache}" "${basename}" "${gitdate}" "${output}" ".git/*"
