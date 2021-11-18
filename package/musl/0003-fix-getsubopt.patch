@@ -1,0 +1,11 @@
+diff -Naur musl-1.2.2.orig/src/misc/getsubopt.c musl-1.2.2/src/misc/getsubopt.c
+--- musl-1.2.2.orig/src/misc/getsubopt.c	2021-01-15 05:26:00.000000000 +0300
++++ musl-1.2.2/src/misc/getsubopt.c	2021-11-18 03:35:06.000000000 +0300
+@@ -19,5 +19,7 @@
+ 		else if (s[l]) continue;
+ 		return i;
+ 	}
++	/* The current suboption does not match any option.  */
++  	*val = s;
+ 	return -1;
+ }
