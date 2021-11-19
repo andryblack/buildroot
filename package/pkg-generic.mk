@@ -1069,6 +1069,16 @@ $(1)-clean-for-reconfigure: $(1)-clean-for-rebuild
 
 $(1)-reconfigure:	$(1)-clean-for-reconfigure $(1)
 
+ifeq ($$($(2)_TYPE),target)
+$(1)-generate-ipk-control:
+	@:
+	$$(info Package: $(1))
+	$$(info Version: $$($(2)_VERSION))
+	$$(info Architecture: $$(call qstrip,$$(BR2_GCC_TARGET_CPU)))
+#	$$(info Description: $$($(2)_DESC))
+	$$(info Depends: $$(filter-out skeleton toolchain host-%,$$($(2)_DEPENDENCIES)))
+endif
+
 # define the PKG variable for all targets, containing the
 # uppercase package variable prefix
 $$($(2)_TARGET_INSTALL):		PKG=$(2)
@@ -1281,7 +1291,8 @@ DL_TOOLS_DEPENDENCIES += $$(call extractor-system-dependency,$$($(2)_SOURCE))
 	$(1)-show-depends \
 	$(1)-show-info \
 	$(1)-show-version \
-	$(1)-source
+	$(1)-source \
+	$(1)-generate-ipk-control
 
 ifneq ($$($(2)_SOURCE),)
 ifeq ($$($(2)_SITE),)
