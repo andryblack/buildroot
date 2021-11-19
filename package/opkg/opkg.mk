@@ -12,6 +12,9 @@ OPKG_LICENSE_FILES = COPYING
 OPKG_INSTALL_STAGING = YES
 OPKG_CONF_OPTS = --disable-curl
 
+HOST_OPKG_DEPENDENCIES = host-pkgconf host-libarchive
+HOST_OPKG_CONF_OPTS = --disable-curl --disable-gpg
+
 # Ensure directory for lockfile exists
 define OPKG_CREATE_LOCKDIR
 	mkdir -p $(TARGET_DIR)/usr/lib/opkg
@@ -30,3 +33,4 @@ endif
 OPKG_POST_INSTALL_TARGET_HOOKS += OPKG_CREATE_LOCKDIR
 
 $(eval $(autotools-package))
+$(eval $(host-autotools-package))
