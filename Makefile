@@ -450,12 +450,16 @@ XZCAT := $(call qstrip,$(BR2_XZCAT))
 LZCAT := $(call qstrip,$(BR2_LZCAT))
 TAR_OPTIONS = $(call qstrip,$(BR2_TAR_OPTIONS)) -xf
 
+ifneq ($(BR2_BUILD_SINGLE_PACKAGE_DIR),)
+TARGET_DIR = $(BR2_BUILD_SINGLE_PACKAGE_DIR)
+else
 ifeq ($(BR2_PER_PACKAGE_DIRECTORIES),y)
 HOST_DIR = $(if $(PKG),$(PER_PACKAGE_DIR)/$($(PKG)_NAME)/host,$(call qstrip,$(BR2_HOST_DIR)))
 TARGET_DIR = $(if $(ROOTFS),$(ROOTFS_$(ROOTFS)_TARGET_DIR),$(if $(PKG),$(PER_PACKAGE_DIR)/$($(PKG)_NAME)/target,$(BASE_TARGET_DIR)))
 else
 HOST_DIR := $(call qstrip,$(BR2_HOST_DIR))
 TARGET_DIR = $(if $(ROOTFS),$(ROOTFS_$(ROOTFS)_TARGET_DIR),$(BASE_TARGET_DIR))
+endif
 endif
 
 ifneq ($(HOST_DIR),$(BASE_DIR)/host)
