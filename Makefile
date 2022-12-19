@@ -315,7 +315,7 @@ ifndef HOSTRANLIB
 HOSTRANLIB := ranlib
 endif
 ifndef HOSTCHMOD
-HOSTCHMOD := chown
+HOSTCHMOD := chmod
 endif
 HOSTAR := $(shell which $(HOSTAR) || type -p $(HOSTAR) || echo ar)
 HOSTAS := $(shell which $(HOSTAS) || type -p $(HOSTAS) || echo as)
